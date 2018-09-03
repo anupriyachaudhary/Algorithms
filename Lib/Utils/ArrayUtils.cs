@@ -23,5 +23,41 @@ namespace Lib.Utils
                 arr[j] = temp;
             }
         }
+
+        public static void GetPivot(int[] arr, int left, int right)
+        {
+            if (left > right)
+                return -1;
+            if (left = right)
+                return left;
+            
+            var mid = (left + right)/2
+            if (arr[mid] > arr[mid+1])
+                return mid;
+            if (arr[mid] < arr[mid-1])
+                return mid-1;
+            else
+                return GetPivot(arr, left, mid)
+
+            return GetPivot(arr, mid + 1, right )
+        }
+
+        public static void BinarySearch(int[] arr, int left, int right, int elem)
+        {
+            if (right >= left) 
+            { 
+                int mid = left + (right - left)/2; 
+
+                if (arr[mid] == elem)   
+                    return mid; 
+  
+                if (arr[mid] > elem)  
+                    return binarySearch(arr, left, mid-1, elem); 
+    
+                return binarySearch(arr, mid+1, right, elem); 
+            } 
+  
+            return -1; 
+        }
     }
 }
