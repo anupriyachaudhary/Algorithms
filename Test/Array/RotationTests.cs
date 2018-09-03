@@ -98,6 +98,17 @@ namespace Test.Array
             int output = rotation.SearchRotatedArray(inputArr, elem);
             Assert.True(output == expectedLocation);
         }
+
+        [Fact]
+        public void TestFindSumPair()
+        {
+            int[] inputArr = { 11, 15, 26, 38, 9, 10 };
+            int sum = 45;
+            bool expectedOutput = false;
+
+            bool output = rotation.FindSumPair(inputArr, sum);
+            Assert.True(output == expectedOutput);
+        }
     }
 }
 

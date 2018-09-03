@@ -33,6 +33,7 @@ namespace Lib.Array
             ArrayUtils.Reverse(arr, arr.Length - d, arr.Length - 1);
         }
 
+        //Search an element in a sorted and rotated array
         public int SearchRotatedArray(int[] arr, int elem)
         {
             //get pivot
@@ -44,6 +45,49 @@ namespace Lib.Array
                 return ArrayUtils.BinarySearch(arr, 0, pivot - 1, elem);
             //search right array of pivot using binary search
             return ArrayUtils.BinarySearch(arr, pivot + 1, arr.Length - 1, elem);
+        }
+
+        //Given an array that is sorted and then rotated around an unknown point. Find if array has a pair with given sum ‘x’. 
+        //It may be assumed that all elements in array are distinct.
+        public bool FindSumPair(int[] arr, int sum)
+        {
+            int arrLength = arr.Length;
+            //get pivot
+            int pivot = ArrayUtils.GetPivot(arr, 0, arrLength-1);
+
+            int rightPointer = (pivot + 1) % arrLength;
+            int leftPointer = pivot;
+
+            return FindSumPair(arr, leftPointer, rightPointer, sum);
+            
+        }
+
+        public bool FindSumPair(int[] arr, int leftPointer, int rightPointer, int sum)
+        {
+            int arrLength = arr.Length;
+
+            if(leftPointer == rightPointer)
+                return false;
+
+            if (arr[rightPointer] + arr[leftPointer] == sum)
+                return true;
+    
+            else if (arr[rightPointer] + arr[leftPointer] > sum)
+            {
+                if (leftPointer > 0)
+                    leftPointer = (leftPointer - 1);
+                else
+                    leftPointer = arrLength - 1;
+            }
+
+            else
+            {
+                if (rightPointer < arrLength - 1)
+                    rightPointer = rightPointer + 1;
+                else
+                    rightPointer = 0;
+            }   
+            return FindSumPair(arr, leftPointer, rightPointer, sum);
         }
     }
 }
