@@ -92,8 +92,8 @@ namespace Test.Array
         public void TestSearchRotatedArray()
         {
             int[] inputArr = { 5, 6, 7, 8, 9, 10, 1, 2, 3 };
-            int elem = 8;
-            int expectedLocation = 3;
+            int elem = 1;
+            int expectedLocation = 6;
 
             int output = rotation.SearchRotatedArray(inputArr, elem);
             Assert.True(output == expectedLocation);
