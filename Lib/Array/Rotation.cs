@@ -33,14 +33,17 @@ namespace Lib.Array
             ArrayUtils.Reverse(arr, arr.Length - d, arr.Length - 1);
         }
 
-        public void SearchRotatedArray(int[] arr, int elem)
+        public int SearchRotatedArray(int[] arr, int elem)
         {
             //get pivot
-            int pivot = ArrayUtils.GetPivot(int[] arr, int start, int end)
+            int pivot = ArrayUtils.GetPivot(arr, 0, arr.Length-1);
             //search left array of pivot using binary search
-            return ArrayUtils.BinarySearch(arr, start, pivot, elem)
+            if (arr[pivot] == elem)
+                return pivot;
+            if (arr[0] < elem)
+                return ArrayUtils.BinarySearch(arr, 0, pivot - 1, elem);
             //search right array of pivot using binary search
-            return ArrayUtils.BinarySearch(arr, pivot + 1, end, elem)
+            return ArrayUtils.BinarySearch(arr, pivot + 1, arr.Length - 1, elem);
         }
     }
 }

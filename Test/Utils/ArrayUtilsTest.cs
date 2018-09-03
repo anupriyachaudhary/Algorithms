@@ -1,6 +1,7 @@
 using Lib.Utils;
 using Xunit;
 using Test.TestUtils;
+using System;
 
 namespace Test.Utils
 {
@@ -14,6 +15,27 @@ namespace Test.Utils
 
             ArrayUtils.Reverse(inputArr);
             Assert.True(ArrayTestUtils.ArraysEqual(inputArr, expectedArr));
+        }
+
+        [Fact]
+        public void TestGetPivot()
+        {
+            int[] inputArr = { 5, 6, 7, 8, 9, 10, 1, 2, 3 };
+            int expectedPivot = 10;
+
+            int output = ArrayUtils.GetPivot(inputArr, 0, inputArr.Length-1);
+            Assert.True(output == expectedPivot);
+        }
+
+        [Fact]
+        public void TestBinarySearch()
+        {
+            int[] inputArr = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            int key = 8;
+            int expectedLocation = 7;
+
+            int output = ArrayUtils.BinarySearch(inputArr, 0, inputArr.Length-1, key);
+            Assert.True(output == expectedLocation);
         }
     }
 }

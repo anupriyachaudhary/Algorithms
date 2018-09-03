@@ -1,7 +1,7 @@
-using System;
 using Xunit;
 using Lib.Array;
 using Test.TestUtils;
+using System;
 
 namespace Test.Array
 {
@@ -86,6 +86,17 @@ namespace Test.Array
 
             rotation.Rotate(inputArr, d);
             Assert.True(ArrayTestUtils.ArraysEqual(inputArr, expectedArr));
+        }
+
+        [Fact]
+        public void TestSearchRotatedArray()
+        {
+            int[] inputArr = { 5, 6, 7, 8, 9, 10, 1, 2, 3 };
+            int elem = 8;
+            int expectedLocation = 3;
+
+            int output = rotation.SearchRotatedArray(inputArr, elem);
+            Assert.True(output == expectedLocation);
         }
     }
 }
