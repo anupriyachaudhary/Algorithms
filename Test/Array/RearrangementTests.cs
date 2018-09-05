@@ -41,5 +41,29 @@ namespace Test.Array
             rearrangement.PosNegInOrderRearrange(inputArr);
             Assert.True(ArrayTestUtils.ArraysEqual(inputArr, expectedArr));
         }
+
+        [Fact]
+        public void ZerosRearrange()
+        {
+            int[] inputArr = { 1, 2, 0, 4, 3, 0, 5, 0 };
+            int[] expectedArr = { 1, 2, 4, 3, 5, 0, 0, 0 };
+
+            rearrangement.ZerosRearrange(inputArr);
+            Assert.True(ArrayTestUtils.ArraysEqual(inputArr, expectedArr));
+        }
+
+        [Fact]
+        public void ReorderArrays()
+        {
+            int[] inputArr = { 50, 40, 70, 60, 90 };
+            int[] inputIndex = { 3, 0, 4, 1, 2 };
+
+            int[] expectedArr = { 40, 60, 90, 50, 70 };
+            int[] expectedIndex = { 0, 1, 2, 3, 4 };
+
+            rearrangement.ReorderArrays(inputArr, inputIndex);
+            Assert.True(ArrayTestUtils.ArraysEqual(inputArr, expectedArr));
+            Assert.True(ArrayTestUtils.ArraysEqual(inputIndex, expectedIndex));
+        }
     }
 }

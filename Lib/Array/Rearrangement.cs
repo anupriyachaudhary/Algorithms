@@ -72,12 +72,13 @@ namespace Lib.Array
             }
 
             // Partition array with last element as pivot. All positive numbers on left and negative numbers on right
-            int pivotIndex = Partition(arr);
+            int pivotIndex = PartitionPosNeg(arr);
 
             // Place positive and negative numbers in alternate positions using posPointer and negPointer
             int posPointer = -1;
             int negPointer = -1;
 
+            // pivotIndex is negative when there are no positive numbers in array
             if(pivotIndex != -1)
             {
                 posPointer = 0;
@@ -85,6 +86,7 @@ namespace Lib.Array
             else
                 return;
             
+            // if pivot index is (arr.Length-1) there are no negative numbers
             if(pivotIndex != arr.Length - 1)
             {
                 negPointer = pivotIndex + 1;
@@ -101,18 +103,8 @@ namespace Lib.Array
             }
         }
 
-        private int Partition(int[] arr)
+        private int PartitionPosNeg(int[] arr)
         {
-            if(arr.Length <= 0)
-            {
-                throw new ArgumentException();
-            }
-
-            if(arr.Length == 1)
-            {
-                return 0;
-            }
-
             if(arr.Length == 2)
             {
                 if(arr[0] < 0 && arr[1] > 0)
@@ -167,6 +159,7 @@ namespace Lib.Array
             }
         }
 
+        // rearrange array in alternating positive and negative items with O(1) extra space, maintaining the order of appearance
         public void PosNegInOrderRearrange(int[] arr)
         {
             // check for invalid input
@@ -180,55 +173,201 @@ namespace Lib.Array
                 return;
             }
 
-            // mainPointer = main pointer to keep track of array index till which all elements are correct
-            // tempPointer = temporary pointer to keep find the element to be swapped with the element at main pointer
-            for (int mainPointer = 0; mainPointer < arr.Length; mainPointer++)
+            for (int index = 0; index < arr.Length; index++)
             {
-                int tempLeftPointer = 0;
-                int tempRightPointer = 0;
-                if (mainPointer % 2 == 0)
+                int tempPointer = 0;
+                if (index % 2 == 0)
                 {
-                    if (arr[mainPointer] > 0)
+                    if (arr[index] < 0)
                     {
                         continue;
                     }
                     else
                     {
-                        tempRightPointer = mainPointer + 1;
-                        while(arr[tempRightPointer] < 0 && tempRightPointer < arr.Length)
+                        tempPointer = index + 1;
+                        while(tempPointer < arr.Length && arr[tempPointer] >= 0)
                         {
-                            ++tempRightPointer;
+                            ++tempPointer;
                         }
 
-                        if (tempRightPointer != arr.Length)
+                        if (tempPointer != arr.Length)
                         {
-                            
-                            swap(arr, mainPointer, tempRightPointer);
+                            Rotate(arr, index, tempPointer, 1, 1);
                         }
                     }
                 }
 
                 else
                 {
-                    if (arr[mainPointer] < 0)
+                    if (arr[index] >= 0)
                     {
                         continue;
                     }
                     else
                     {
-                        tempRightPointer = mainPointer + 1;
-                        while(arr[tempRightPointer] >= 0 && tempRightPointer < arr.Length)
+                        tempPointer = index + 1;
+                        while(tempPointer < arr.Length && arr[tempPointer] < 0)
                         {
-                            ++tempRightPointer;
+                            ++tempPointer;
                         }
 
-                        if (tempRightPointer != arr.Length)
+                        if (tempPointer != arr.Length)
                         {
-                            swap(arr, mainPointer, tempRightPointer);
+                            Rotate(arr, index, tempPointer, 1, 1);
                         }
                     }
                 }    
             }   
         }
+
+        // rotate: right = 1, left = 0
+        private void Rotate(int[] arr, int start, int end, int d, int rotate)
+        {
+            if(d < 0 || (end - start) < 0)
+            {
+                throw new ArgumentException();
+            }
+
+            if(start == end)
+            {
+                return;
+            }
+
+            if(d == 0)
+            {
+                return;
+            }
+
+            if(rotate == 1)
+            {
+                ArrayUtils.Reverse(arr, start, end);
+                ArrayUtils.Reverse(arr, start, start + d - 1);
+                ArrayUtils.Reverse(arr, start + d, end);
+            }
+
+            if(rotate == 0)
+            {
+                ArrayUtils.Reverse(arr, start, end);
+                ArrayUtils.Reverse(arr, start, end - d);
+                ArrayUtils.Reverse(arr, end - d + 1, end);
+            }
+        }
+
+        // complexity ??
+        /*public void ZerosRearrange(int[] arr)
+        {
+            // check for invalid input
+            if(arr.Length <= 0)
+            {
+                throw new ArgumentException();
+            }
+
+            if(arr.Length == 1)
+            {
+                return;
+            }
+ 
+            int index = 0;
+            int zeroPointer = 0;
+            int zeroCount = 0;
+            while(index < arr.Length)
+            {
+                if(arr[index] == 0)
+                {
+                    zeroPointer = index + zeroCount + 1;
+
+                    while(zeroPointer < arr.Length && arr[zeroPointer] != 0)
+                    {
+                        ++zeroPointer;
+                    }
+
+                    if(zeroPointer != arr.Length && index + zeroCount != zeroPointer - 1)
+                    {
+                        Rotate(arr, index, zeroPointer - 1, zeroCount + 1, 0);
+                    }
+                    if (zeroPointer == arr.Length && arr[zeroPointer - 1] != 0)
+                    {
+                        Rotate(arr, index, zeroPointer - 1, zeroCount + 1, 0);
+                    }
+                    if(zeroPointer == arr.Length && arr[zeroPointer - 1] == 0)
+                    {
+                        break;
+                    }
+                    
+                    ++zeroCount;
+                    index = zeroPointer - zeroCount;
+                }
+                
+                else
+                {
+                    ++index;
+                }
+            }
+        }*/
+
+        public void ZerosRearrange(int[] arr)
+        {
+            // check for invalid input
+            if(arr.Length <= 0)
+            {
+                throw new ArgumentException();
+            }
+
+            if(arr.Length == 1)
+            {
+                return;
+            }
+
+            bool isZeroEncountered = false;
+            int lastNonZeroPointer = 0;
+
+            for(int index = 0; index < arr.Length; index++)
+            {
+                if(arr[index] != 0)
+                {
+                    if(isZeroEncountered)
+                    {
+                        arr[lastNonZeroPointer] = arr[index];
+                        arr[index] = 0;
+                    }
+                    ++lastNonZeroPointer;
+                }
+
+                else
+                {
+                    isZeroEncountered = true;
+                }
+            }
+        }
+
+        //reorder array according to given indices
+        public void ReorderArrays(int[] arr, int[] index)
+        {
+            int tempIndex1 = -1;
+            int tempValue1 = -1;
+            int tempIndex2 = -1;
+            int tempValue2 = -1;
+
+            for(int i = 0; i < index.Length; i++)
+            {
+                tempIndex1 = i;
+
+                while(index[tempIndex1] != tempIndex1)
+                {
+                    int k = index[tempIndex1];
+                    tempValue2 = arr[index[tempIndex1]];
+                    k = index[tempIndex1];
+                    tempIndex2 = index[index[tempIndex1]];
+
+                    index[index[tempIndex1]] = index[tempIndex1];
+                    arr[index[tempIndex1]] = arr[tempIndex1];
+
+                    tempValue1 = tempValue2;
+                    tempIndex1 = tempIndex2;
+                }
+                
+            }
+        }
+
     }
 }
