@@ -18,16 +18,6 @@ namespace Test.Utils
         }
 
         [Fact]
-        public void TestGetPivot()
-        {
-            int[] inputArr = { 5, 6, 7, 8, 9, 10, 1, 2, 3 };
-            int expectedPivotIndex = 5;
-
-            int output = ArrayUtils.GetPivot(inputArr, 0, inputArr.Length-1);
-            Assert.True(output == expectedPivotIndex);
-        }
-
-        [Fact]
         public void TestBinarySearch()
         {
             int[] inputArr = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };

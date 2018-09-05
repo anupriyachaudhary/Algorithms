@@ -37,7 +37,7 @@ namespace Lib.Array
         public int SearchRotatedArray(int[] arr, int elem)
         {
             //get pivot
-            int pivot = ArrayUtils.GetPivot(arr, 0, arr.Length-1);
+            int pivot = GetPivot(arr, 0, arr.Length-1);
             //search left array of pivot using binary search
             if (arr[pivot] == elem)
                 return pivot;
@@ -53,7 +53,7 @@ namespace Lib.Array
         {
             int arrLength = arr.Length;
             //get pivot
-            int pivot = ArrayUtils.GetPivot(arr, 0, arrLength-1);
+            int pivot = GetPivot(arr, 0, arrLength-1);
 
             int rightPointer = (pivot + 1) % arrLength;
             int leftPointer = pivot;
@@ -62,7 +62,7 @@ namespace Lib.Array
             
         }
 
-        public bool FindSumPair(int[] arr, int leftPointer, int rightPointer, int sum)
+        private bool FindSumPair(int[] arr, int leftPointer, int rightPointer, int sum)
         {
             int arrLength = arr.Length;
 
@@ -88,6 +88,24 @@ namespace Lib.Array
                     rightPointer = 0;
             }   
             return FindSumPair(arr, leftPointer, rightPointer, sum);
+        }
+
+        public int GetPivot(int[] arr, int left, int right)
+        {
+            if (left > right)
+                return -1;
+            if (left == right)
+                return left;
+            
+            var mid = (left + right)/2;
+            if (mid < right && arr[mid] > arr[mid+1])
+                return mid;
+            if (mid > left && arr[mid] < arr[mid-1])
+                return mid-1;
+            if (arr[left] > arr[mid])
+                return GetPivot(arr, left, mid -1);
+
+            return GetPivot(arr, mid + 1, right);
         }
     }
 }

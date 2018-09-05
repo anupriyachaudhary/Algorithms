@@ -109,6 +109,16 @@ namespace Test.Array
             bool output = rotation.FindSumPair(inputArr, sum);
             Assert.True(output == expectedOutput);
         }
+
+        [Fact]
+        public void TestGetPivot()
+        {
+            int[] inputArr = { 5, 6, 7, 8, 9, 10, 1, 2, 3 };
+            int expectedPivotIndex = 5;
+
+            int output = rotation.GetPivot(inputArr, 0, inputArr.Length-1);
+            Assert.True(output == expectedPivotIndex);
+        }
     }
 }
 
