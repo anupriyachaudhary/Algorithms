@@ -33,6 +33,28 @@ namespace Lib.Array
             ArrayUtils.Reverse(arr, arr.Length - d, arr.Length - 1);
         }
 
+        public void Rotate(int[] arr, int start, int end, int d)
+        {
+            if(d < 0 || (end - start) < 0)
+            {
+                throw new ArgumentException();
+            }
+
+            if(start == end)
+            {
+                return;
+            }
+
+            if(d == 0)
+            {
+                return;
+            }
+
+            ArrayUtils.Reverse(arr, start, end);
+            ArrayUtils.Reverse(arr, start, start + d - 1);
+            ArrayUtils.Reverse(arr, start + d, end);
+        }
+
         //Search an element in a sorted and rotated array
         public int SearchRotatedArray(int[] arr, int elem)
         {

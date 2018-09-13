@@ -1,10 +1,18 @@
 using System;
+using System.Collections.Generic;
 using Lib.Utils;
+
 
 namespace Lib.Array
 {
     public class Rearrangement
     {
+        private Rotation rotation;
+        public Rearrangement()
+        {
+            rotation = new Rotation();
+        }
+
         // Given an array of elements of length N, ranging from 1 to N. All elements may not be present in the array. 
         // If element is not present then there will be -1 present in the array. Rearrange the array such that A[i] = i 
         //and if i is not present, display -1 at that place.
@@ -27,32 +35,23 @@ namespace Lib.Array
                 {
                     continue;
                 }
-
                 else if (arr[i] == i)
                 {
                     continue;
                 }
-
                 else
                 {
                     // swap element(e) at index i with element at index e
-                    swap(arr, arr[i], i);
+                    ArrayUtils.Swap(arr, arr[i], i);
 
                     // swap again & again if the element at index i is still not at its right position
                     // No need to swap if element at index i is -1 or if a[i] = i
                     while(arr[i] != -1 && arr[i] != i)
                     {
-                        swap(arr, arr[i], i);
+                        ArrayUtils.Swap(arr, arr[i], i);
                     }
                 }
             }
-        }
-
-        private void swap(int[] arr, int index1, int index2)
-        {
-            int temp = arr[index1];
-            arr[index1] = arr[index2];
-            arr[index2] = temp;
         }
 
         //Given an array of n elements. Our task is to write a program to rearrange the array such that elements
@@ -73,31 +72,21 @@ namespace Lib.Array
 
             // Partition array with last element as pivot. All positive numbers on left and negative numbers on right
             int pivotIndex = PartitionPosNeg(arr);
+            
+            // pivotIndex is negative when there are no positive numbers in array
+            // if pivot index is (arr.Length-1) there are no negative numbers
+            if(pivotIndex == -1 || pivotIndex == arr.Length - 1)
+            {
+                return;
+            }
 
             // Place positive and negative numbers in alternate positions using posPointer and negPointer
-            int posPointer = -1;
-            int negPointer = -1;
-
-            // pivotIndex is negative when there are no positive numbers in array
-            if(pivotIndex != -1)
-            {
-                posPointer = 0;
-            }
-            else
-                return;
+            int  posPointer = 0;
+            int negPointer = pivotIndex + 1;
             
-            // if pivot index is (arr.Length-1) there are no negative numbers
-            if(pivotIndex != arr.Length - 1)
-            {
-                negPointer = pivotIndex + 1;
-            }
-            else 
-                return;
-
             while(negPointer < arr.Length)
             {
-                ++posPointer;
-                swap(arr, posPointer, negPointer);
+                ArrayUtils.Swap(arr, ++posPointer, negPointer);
                 ++negPointer;
                 ++posPointer;
             }
@@ -109,7 +98,7 @@ namespace Lib.Array
             {
                 if(arr[0] < 0 && arr[1] > 0)
                 {
-                    swap(arr, 0, 1);
+                    ArrayUtils.Swap(arr, 0, 1);
                     return 0;
                 }
 
@@ -134,19 +123,19 @@ namespace Lib.Array
                 }
                 else
                 {
-                    swap(arr, leftPointer, rightPointer);
+                    ArrayUtils.Swap(arr, leftPointer, rightPointer);
                     --rightPointer;
                 }
             }
 
             if(arr[leftPointer] > 0 && arr[pivot] > 0)
             {
-                swap(arr, pivot, leftPointer + 1);
+                ArrayUtils.Swap(arr, pivot, leftPointer + 1);
                 return leftPointer + 1;
             }
             else if(arr[leftPointer] < 0 && arr[pivot] > 0)
             {
-                swap(arr, pivot, leftPointer);
+                ArrayUtils.Swap(arr, pivot, leftPointer);
                 return leftPointer;
             }
             else if(arr[leftPointer] < 0 && arr[pivot] < 0)
@@ -192,7 +181,7 @@ namespace Lib.Array
 
                         if (tempPointer != arr.Length)
                         {
-                            Rotate(arr, index, tempPointer, 1, 1);
+                            rotation.Rotate(arr, index, tempPointer, 1);
                         }
                     }
                 }
@@ -213,97 +202,12 @@ namespace Lib.Array
 
                         if (tempPointer != arr.Length)
                         {
-                            Rotate(arr, index, tempPointer, 1, 1);
+                            rotation.Rotate(arr, index, tempPointer, 1);
                         }
                     }
                 }    
             }   
         }
-
-        // rotate: right = 1, left = 0
-        private void Rotate(int[] arr, int start, int end, int d, int rotate)
-        {
-            if(d < 0 || (end - start) < 0)
-            {
-                throw new ArgumentException();
-            }
-
-            if(start == end)
-            {
-                return;
-            }
-
-            if(d == 0)
-            {
-                return;
-            }
-
-            if(rotate == 1)
-            {
-                ArrayUtils.Reverse(arr, start, end);
-                ArrayUtils.Reverse(arr, start, start + d - 1);
-                ArrayUtils.Reverse(arr, start + d, end);
-            }
-
-            if(rotate == 0)
-            {
-                ArrayUtils.Reverse(arr, start, end);
-                ArrayUtils.Reverse(arr, start, end - d);
-                ArrayUtils.Reverse(arr, end - d + 1, end);
-            }
-        }
-
-        // complexity ??
-        /*public void ZerosRearrange(int[] arr)
-        {
-            // check for invalid input
-            if(arr.Length <= 0)
-            {
-                throw new ArgumentException();
-            }
-
-            if(arr.Length == 1)
-            {
-                return;
-            }
- 
-            int index = 0;
-            int zeroPointer = 0;
-            int zeroCount = 0;
-            while(index < arr.Length)
-            {
-                if(arr[index] == 0)
-                {
-                    zeroPointer = index + zeroCount + 1;
-
-                    while(zeroPointer < arr.Length && arr[zeroPointer] != 0)
-                    {
-                        ++zeroPointer;
-                    }
-
-                    if(zeroPointer != arr.Length && index + zeroCount != zeroPointer - 1)
-                    {
-                        Rotate(arr, index, zeroPointer - 1, zeroCount + 1, 0);
-                    }
-                    if (zeroPointer == arr.Length && arr[zeroPointer - 1] != 0)
-                    {
-                        Rotate(arr, index, zeroPointer - 1, zeroCount + 1, 0);
-                    }
-                    if(zeroPointer == arr.Length && arr[zeroPointer - 1] == 0)
-                    {
-                        break;
-                    }
-                    
-                    ++zeroCount;
-                    index = zeroPointer - zeroCount;
-                }
-                
-                else
-                {
-                    ++index;
-                }
-            }
-        }*/
 
         public void ZerosRearrange(int[] arr)
         {
@@ -340,7 +244,50 @@ namespace Lib.Array
             }
         }
 
-        //reorder array according to given indices
+        //Given an array of n positive integers and a number k. Find the minimum swaps required to bring all elements
+        //less than or equal to k together
+        // Complexity = O(n) + O(nd), where n = length of array and d = number of elements less than k
+        public int MinSwapLessThanK(int[] arr, int k)
+        {
+            // count the number of all elements less than or equal to K
+            int countLessThanK = 0;
+            for(int i = 0; i < arr.Length; i++)
+            {
+                if (arr[i] <= k)
+                {
+                    countLessThanK++;
+                }
+            }
+
+            int start = 0;                          // start index of sub-array
+            int end = countLessThanK - 1;           // end index of sub-array
+            int maxCount = -1;                      // maximum count of elements less than or equal to K among all sub-array so far
+
+            // check all possible sub arrays and find the sub array with maximum number of elements less than or equal to K
+            while(end < arr.Length)
+            {
+                int tempCount = 0;                  // count of elements less than or equal to K in given sub-array
+                for(int j = start; j <= end; j++)
+                {
+                    if (arr[j] <= k)
+                    {
+                        tempCount++;
+                    }
+                }
+
+                if(tempCount > maxCount)
+                {
+                    maxCount = tempCount;
+                }
+                start++;
+                end++;
+            }
+
+            return (countLessThanK - maxCount);
+        }
+
+        // Given two integer arrays of same size "arr[]" and "index[]" reorder elements in "arr[]" according to given index array. 
+        //It is not allowed to use given array arr's length
         public void ReorderArrays(int[] arr, int[] index)
         {
             int tempIndex1 = -1;
@@ -350,23 +297,129 @@ namespace Lib.Array
 
             for(int i = 0; i < index.Length; i++)
             {
-                tempIndex1 = i;
+                tempIndex1 = index[i];
+                tempValue1 = arr[i];
 
                 while(index[tempIndex1] != tempIndex1)
                 {
-                    int k = index[tempIndex1];
-                    tempValue2 = arr[index[tempIndex1]];
-                    k = index[tempIndex1];
-                    tempIndex2 = index[index[tempIndex1]];
+                    tempValue2 = arr[tempIndex1];
+                    tempIndex2 = index[tempIndex1];
 
-                    index[index[tempIndex1]] = index[tempIndex1];
-                    arr[index[tempIndex1]] = arr[tempIndex1];
+                    index[tempIndex1] = tempIndex1;
+                    arr[tempIndex1] = tempValue1;
 
                     tempValue1 = tempValue2;
                     tempIndex1 = tempIndex2;
                 }
                 
             }
+        }
+
+        // Given an array of numbers, arrange them in a way that yields the largest value.
+
+        public long FormBiggestNumber1(int[] arr)
+        {
+            MergeSortArray(arr, 0, arr.Length - 1);
+            return concat(arr);
+        }
+        public long FormBiggestNumber(int[] arr)
+        {
+            MergeSortArray(arr, 0, arr.Length - 1);
+            return concat(arr);
+        }
+
+        private void MergeSortArray(int[] arr, int left, int right)
+        {
+            if(left < right)
+            {
+                int middle = left + (right - left)/2;
+                MergeSortArray(arr, left, middle);
+                MergeSortArray(arr, middle + 1, right);
+
+                MergeArray(arr, left, middle, right);
+            }
+        }
+
+        private void MergeArray(int[] arr, int left, int middle, int right)
+        {
+            int i, j, k;
+            int n1 = middle - left + 1;
+            int n2 = right - middle;
+            // create temp arrays
+            int[] arrayLeft = new int[n1];
+            int[] arrayRight = new int[n2];
+
+            // copy data to temp arrays 
+            for(i = 0; i < n1; i++)
+            {
+                arrayLeft[i] = arr[left + i];
+            }
+            for(j = 0; j < n2; j++)
+            {
+                arrayRight[j] = arr[middle + 1 + j];
+            }
+
+            // Merge the temp arrays back into arr[0.....right]
+            i = 0;
+            j = 0;
+            k = left;
+            while (i < n1 && j < n2)
+            {
+                if (IsNumberGreater(arrayLeft[i], arrayRight[j]))
+                {
+                    arr[k] = arrayLeft[i];
+                    i++;
+                }
+                else
+                {
+                    arr[k] = arrayRight[j];
+                    j++;
+                }
+                k++;
+            }
+            
+            // copy the remaining elements of arrayRight[], if there are any
+            while(i < n1)
+            {
+                arr[k] = arrayLeft[i];
+                i++;
+                k++;
+            }
+
+            // copy the remaining elements of arrayleft[], if there are any
+            while(j < n2)
+            {
+                arr[k] = arrayRight[j];
+                j++;
+                k++;
+            }
+        }
+
+        private bool IsNumberGreater(int number1, int number2)
+        {
+            string temp1 = number1.ToString();
+            string temp2 = number2.ToString();
+
+
+            if (Int32.Parse(temp1+temp2) > Int32.Parse(temp2+temp1))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private long concat(int[] arr)
+        {
+            string result = "";
+            string tempString = "";
+
+            for(int i = 0; i < arr.Length; i++)
+            {
+                tempString = arr[i].ToString();
+                result += tempString;
+            }
+
+            return Int64.Parse(result);
         }
 
     }

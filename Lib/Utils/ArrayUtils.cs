@@ -24,6 +24,13 @@ namespace Lib.Utils
             }
         }
 
+        public static void Swap(int[] arr, int index1, int index2)
+        {
+            int temp = arr[index1];
+            arr[index1] = arr[index2];
+            arr[index2] = temp;
+        }
+
         public static int BinarySearch(int[] arr, int left, int right, int elem)
         {
             if (right >= left) 
